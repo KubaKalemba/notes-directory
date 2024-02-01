@@ -1,6 +1,7 @@
 package com.kumaiscoding.notesappspring.controller;
 
 import com.kumaiscoding.notesappspring.dto.CredentialsDto;
+import com.kumaiscoding.notesappspring.dto.SignUpDto;
 import com.kumaiscoding.notesappspring.dto.UserDto;
 import com.kumaiscoding.notesappspring.security.UserAuthenticationProvider;
 import com.kumaiscoding.notesappspring.service.UserService;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URI;
 
 @RestController
 public class AuthController {
@@ -28,6 +31,14 @@ public class AuthController {
         UserDto userDto = userService.login(credentialsDto);
         userDto.setToken(userAuthenticationProvider.createToken(userDto.getUsername()));
         return ResponseEntity.ok(userDto);
+    }
+
+
+    @PostMapping("/register")
+    public ResponseEntity<UserDto> register(@RequestBody SignUpDto user) {
+        UserDto createdUser = userService.register(user);
+        createdUser.setToken(userAuthenticationProvider.createToken(user.getUsername()));
+        return ResponseEntity.created(URI.create("/users/" + createdUser.getUsername())).body(createdUser);
     }
 
 }

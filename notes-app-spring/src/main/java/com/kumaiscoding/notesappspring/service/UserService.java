@@ -2,6 +2,7 @@ package com.kumaiscoding.notesappspring.service;
 
 import com.kumaiscoding.notesappspring.dao.UserRepository;
 import com.kumaiscoding.notesappspring.dto.CredentialsDto;
+import com.kumaiscoding.notesappspring.dto.SignUpDto;
 import com.kumaiscoding.notesappspring.dto.UserDto;
 import com.kumaiscoding.notesappspring.entity.User;
 import com.kumaiscoding.notesappspring.exception.AppException;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -44,4 +46,22 @@ public class UserService {
         return userMapper.toUserDto(user);
     }
 
+    public UserDto register(SignUpDto signUpDto) {
+
+        Optional<User> optionalUser = userRepository.findByUsername(signUpDto.getUsername());
+
+        if (optionalUser.isPresent()) {
+            throw new AppException("Login already exists", HttpStatus.BAD_REQUEST);
+        }
+
+        User user = new User();
+        user.setUsername(signUpDto.getUsername());
+        user.setPassword(new String(signUpDto.getPassword()));
+        user.setName(signUpDto.getName());
+
+        User savedUser = userRepository.save(user);
+
+        return userMapper.toUserDto(savedUser);
+
+    }
 }

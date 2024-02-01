@@ -68,8 +68,11 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(HttpMethod.POST, "login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/notes/all").authenticated()
+                        .requestMatchers(HttpMethod.POST, "login", "register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/notes/all", "/users/data").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/notes/all").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "notes/all/*").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "notes/all/*").authenticated()
                         .anyRequest().authenticated()
                 );
         return http.build();

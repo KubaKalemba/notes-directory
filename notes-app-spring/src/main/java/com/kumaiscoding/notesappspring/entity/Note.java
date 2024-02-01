@@ -7,13 +7,14 @@ import jakarta.persistence.*;
 public class Note {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
     @Column(name = "content")
     private String content;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "username", referencedColumnName = "username")
     private User user;
 
@@ -34,5 +35,13 @@ public class Note {
 
     public void setContent(String contents) {
         this.content = contents;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

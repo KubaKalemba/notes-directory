@@ -1,10 +1,10 @@
 package com.kumaiscoding.notesappspring.controller;
 
+import com.kumaiscoding.notesappspring.dao.UserRepository;
 import com.kumaiscoding.notesappspring.entity.Note;
 import com.kumaiscoding.notesappspring.dao.NoteRepository;
+import com.kumaiscoding.notesappspring.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +18,12 @@ import java.util.Optional;
 public class NoteController {
 
     private NoteRepository noteRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public NoteController(NoteRepository noteRepository) {
+    public NoteController(NoteRepository noteRepository, UserRepository userRepository) {
         this.noteRepository = noteRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/all")
@@ -51,13 +53,31 @@ public class NoteController {
 
     @PostMapping("/all")
     public Note addNote(@RequestBody Note n) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<User> u = userRepository.findByUsername(username);
+        if(u.isEmpty()) {
+            throw new RuntimeException();
+        }
+        User user = u.get();
+        n.setUser(user);
+
         noteRepository.save(n);
         return n;
     }
 
-    @PutMapping("/all")
-    public Note updateEmployee(@RequestBody Note note) {
-        Note n = noteRepository.save(note);
+    @PutMapping("/all/{id}")
+    public Note updateEmployee(@RequestBody Note note, @PathVariable int id) {
+        Optional<Note> existingNote = noteRepository.findById(id);
+
+        if (existingNote.isEmpty()) {
+            throw new RuntimeException();
+        }
+
+        Note noteToUpdate = existingNote.get();
+        noteToUpdate.setContent(note.getContent()); // Update content or any other fields
+
+        Note n = noteRepository.save(noteToUpdate);
         return n;
     }
 

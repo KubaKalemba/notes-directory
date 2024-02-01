@@ -17,7 +17,10 @@ public class User {
     @Column(name = "enabled")
     int enabled;
 
-    @OneToMany(mappedBy = "user")
+    @Column(name = "name")
+    String name;
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
     private List<Note> notes;
 
     public User(String username, String password, int enabled) {
@@ -51,5 +54,13 @@ public class User {
 
     public void setEnabled(int enabled) {
         this.enabled = enabled;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
