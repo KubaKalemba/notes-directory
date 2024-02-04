@@ -73,6 +73,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/notes/all").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "notes/all/*").authenticated()
                         .requestMatchers(HttpMethod.PUT, "notes/all/*").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "users/*").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "users/*").authenticated()
                         .anyRequest().authenticated()
                 );
         return http.build();

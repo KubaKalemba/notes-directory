@@ -67,7 +67,7 @@ public class NoteController {
     }
 
     @PutMapping("/all/{id}")
-    public Note updateEmployee(@RequestBody Note note, @PathVariable int id) {
+    public Note updateNote(@RequestBody Note note, @PathVariable int id) {
         Optional<Note> existingNote = noteRepository.findById(id);
 
         if (existingNote.isEmpty()) {
@@ -82,7 +82,7 @@ public class NoteController {
     }
 
     @DeleteMapping("/all/{id}")
-    public String deleteEmployee(@PathVariable int id) {
+    public String deleteNote(@PathVariable int id) {
         Optional<Note> note = noteRepository.findById(id);
         if (note.isEmpty()) {
             throw new RuntimeException("Employee id not found - " + id);
