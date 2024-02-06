@@ -1,12 +1,25 @@
+:root {
+  --bgColor: #f1f2f5;
+  --primaryColor: #1d1d2a;
+  --secondaryColor: #17be4c;
+}
+
 * {
   box-sizing: border-box;
 }
 
+html {
+  background-color: var(--bgColor);
+}
+
 body {
-  max-width: 1980px;
+  max-width: 2980px;
   margin: 0;
   padding: 0;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  color: #444444;
 }
+
 
 button {
   transition: ease-in-out transform .25s;

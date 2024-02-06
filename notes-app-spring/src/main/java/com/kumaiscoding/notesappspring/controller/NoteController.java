@@ -17,8 +17,8 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:5173")
 public class NoteController {
 
-    private NoteRepository noteRepository;
-    private UserRepository userRepository;
+    private final NoteRepository noteRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public NoteController(NoteRepository noteRepository, UserRepository userRepository) {
