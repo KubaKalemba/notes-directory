@@ -23,20 +23,23 @@ public class UserService {
 
 
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDto login(CredentialsDto credentialsDto) {
         User user = userRepository.findByUsername(credentialsDto.getUsername())
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
 
-        if(new String(credentialsDto.getPassword()).equals(user.getPassword())) {
+        if(passwordEncoder.matches(CharBuffer.wrap(credentialsDto.getPassword()), user.getPassword())) {
             return userMapper.toUserDto(user);
         }
+
         throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
     }
 
@@ -56,7 +59,7 @@ public class UserService {
 
         User user = new User();
         user.setUsername(signUpDto.getUsername());
-        user.setPassword(new String(signUpDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(CharBuffer.wrap(signUpDto.getPassword())));
         user.setName(signUpDto.getName());
 
         User savedUser = userRepository.save(user);
